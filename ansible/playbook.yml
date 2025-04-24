@@ -42,7 +42,7 @@
       ignore_errors: true
 
     - name: Generate secret key if not defined
-      ansible.builtin.command: openssl rand -hex 32
+      ansible.builtin.shell: openssl rand -hex 32
       register: generated_secret
       changed_when: false
       when: vault_secret_key is not defined
