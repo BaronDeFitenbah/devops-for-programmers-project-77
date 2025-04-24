@@ -41,12 +41,14 @@
       changed_when: false
       ignore_errors: true
 
-    - name: Generate secret key if not defined
-      ansible.builtin.shell: openssl rand -hex 32
-      register: generated_secret
-      changed_when: false
-      when: vault_secret_key is not defined
-      no_log: true
+    # - name: Generate secret key if not defined
+    #   ansible.builtin.shell: "openssl rand -hex 32"
+    #   args:
+    #     warn: false  # отключает предупреждение о shell вместо command
+    #   register: generated_secret
+    #   changed_when: false
+    #   when: vault_secret_key is not defined
+    #   no_log: true
 
     - name: Set fact for secret key
       ansible.builtin.set_fact:
