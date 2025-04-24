@@ -1,0 +1,8 @@
+# Настройки БД
+db_cluster_id: "e6qbkl0sr9h1r0ccd944"
+db_hosts:
+  - "rc1a-6zdnfkxk50r41hy5.mdb.yandexcloud.net"
+  - "rc1d-af9ropjqc9xjiab9.mdb.yandexcloud.net"
+db_port: 6432
+db_name: "redmine_production"
+db_user: "redmine_admin"

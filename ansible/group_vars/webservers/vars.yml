@@ -1,0 +1,13 @@
+vault_db_password: 12345678
+
+datadog_config:
+  api_key: "{{ vault_datadog_api_key }}"
+  site: "{{ vault_datadog_site }}"
+  tags: "env:prod,role:webserver"
+  checks:
+    http_check:
+      init_config:
+      instances:
+        - name: "Redmine Health Check"
+          url: "http://localhost:{{ redmine_port }}/login"
+          timeout: 5

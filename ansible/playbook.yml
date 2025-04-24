@@ -1,0 +1,87 @@
+---
+- name: Configure Redmine deployment
+  hosts: webservers
+  become: true
+  vars_files:
+    - group_vars/all.yml
+    - group_vars/webservers/vault.yml
+
+  tasks:
+    - name: Install PostgreSQL client and dependencies
+      ansible.builtin.apt:
+        name:
+          - postgresql-client
+          - python3-psycopg2
+        state: present
+        update_cache: true
+
+    - name: Create .postgresql directory for current user
+      ansible.builtin.file:
+        path: "~/.postgresql"
+        state: directory
+        mode: '0700'
+
+    - name: Install Yandex Cloud root certificate for current user
+      ansible.builtin.get_url:
+        url: https://storage.yandexcloud.net/cloud-certs/CA.pem
+        dest: "~/.postgresql/root.crt"
+        mode: '0644'
+
+    - name: Verify database connection
+      community.postgresql.postgresql_query:
+        db: "redmine_production"
+        login_host: "{{ db_hosts[0] }}"
+        login_port: "{{ db_port }}"
+        login_user: "{{ db_user }}"
+        login_password: "{{ vault_db_password }}"
+        ssl_mode: "verify-full"
+        ca_cert: "/root/.postgresql/root.crt"
+        query: "SELECT 1"
+      register: db_check
+      changed_when: false
+      ignore_errors: true
+
+    - name: Generate secret key if not defined
+      ansible.builtin.command: openssl rand -hex 32
+      register: generated_secret
+      changed_when: false
+      when: vault_secret_key is not defined
+      no_log: true
+
+    - name: Set fact for secret key
+      ansible.builtin.set_fact:
+        secret_key: "{{ vault_secret_key | default(generated_secret.stdout) }}"
+
+    - name: Ensure Redmine directory exists
+      ansible.builtin.file:
+        path: /opt/redmine
+        state: directory
+        mode: '0755'
+        owner: root
+        group: root
+
+    - name: Create Redmine environment file
+      ansible.builtin.template:
+        src: templates/redmine.env.j2
+        dest: /opt/redmine/redmine.env
+        mode: '0600'
+      vars:
+        db_connection_string: |
+          host={{ db_hosts | join(',') }}
+          port={{ db_port }}
+          sslmode=verify-full
+          dbname={{ db_name }}
+          user={{ db_user }}
+          password={{ vault_db_password }}
+          target_session_attrs=read-write
+
+    - name: Deploy Redmine container
+      community.docker.docker_container:
+        name: redmine
+        image: redmine:latest
+        state: started
+        restart_policy: unless-stopped
+        env_file: /opt/redmine/redmine.env
+        volumes:
+          - /opt/redmine/files:/usr/src/redmine/files
+          - /root/.postgresql:/usr/src/redmine/.postgresql:ro
