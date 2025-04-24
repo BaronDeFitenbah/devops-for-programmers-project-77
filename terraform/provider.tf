@@ -1,14 +1,22 @@
 terraform {
   required_providers {
-    yandex = {
-      source = "yandex-cloud/yandex"
+    digitalocean = {
+      source  = "digitalocean/digitalocean"
+      version = "~> 2.0"
+    }
+    datadog = {
+      source  = "DataDog/datadog"
+      version = "~> 3.20.0"
     }
   }
 }
 
-provider "yandex" {
-  token     = var.yc_token
-  cloud_id  = var.yc_cloud_id
-  folder_id = var.yc_folder_id
-  zone      = var.yc_zone
+provider "digitalocean" {
+  token = var.do_api_token
+}
+
+provider "datadog" {
+  api_key = var.datadog_api_key
+  app_key = var.datadog_app_key
+  api_url = "https://${var.datadog_domain}/"
 }
