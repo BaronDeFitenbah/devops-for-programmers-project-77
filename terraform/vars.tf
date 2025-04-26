@@ -21,3 +21,24 @@ variable "app_domain" {
 variable "ssh_public_key" {
   type = string
 }
+variable "yc_oauth_token" {
+  description = "Yandex Cloud OAuth token"
+  type        = string
+  sensitive   = true
+}
+
+variable "yc_cloud_id" {
+  description = "Yandex Cloud ID"
+  type        = string
+}
+
+variable "yc_folder_id" {
+  description = "Yandex Cloud Folder ID"
+  type        = string
+}
+
+variable "yc_default_zone" {
+  description = "Default availability zone for Yandex Cloud resources"
+  type        = string
+  default     = "ru-central1-a"
+}
