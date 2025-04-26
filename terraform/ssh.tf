@@ -1,7 +1,7 @@
 resource "yandex_compute_instance" "vm" {
   name        = "terraform-vm"
   platform_id = "standard-v3"
-  
+
   resources {
     cores  = 2
     memory = 2
