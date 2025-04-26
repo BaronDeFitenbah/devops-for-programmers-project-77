@@ -34,7 +34,7 @@ resource "yandex_lb_network_load_balancer" "lb" {
   }
 
   labels = {
-    project = "hexlet-terraform-03"
+    project     = "hexlet-terraform-03"
     environment = "Development"
   }
 }

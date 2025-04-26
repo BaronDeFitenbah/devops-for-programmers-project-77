@@ -21,8 +21,8 @@ resource "local_file" "ssh_public" {
 # Создание первой виртуальной машины (аналог web1)
 resource "yandex_compute_instance" "web1" {
   name        = "terra-web-1"
-  platform_id = "standard-v1" # Платформа виртуальной машины
-  zone        = var.yc_default_zone # Зона доступности
+  platform_id = "standard-v1"
+  zone        = var.yc_default_zone
 
   resources {
     cores  = 2
@@ -31,13 +31,13 @@ resource "yandex_compute_instance" "web1" {
 
   boot_disk {
     initialize_params {
-      image_id = data.yandex_compute_image.ubuntu.id # Используем найденный образ
+      image_id = data.yandex_compute_image.ubuntu.id
     }
   }
 
   network_interface {
-    subnet_id = yandex_vpc_subnet.subnet.id # Подсеть
-    nat       = true # Включение NAT для доступа к интернету
+    subnet_id = yandex_vpc_subnet.subnet.id
+    nat       = true
   }
 
   metadata = {
