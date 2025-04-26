@@ -1,32 +1,26 @@
-resource "digitalocean_database_firewall" "db-firewall" {
-  cluster_id = digitalocean_database_cluster.main.id
+resource "yandex_mdb_mysql_cluster" "main" {
+  name        = "terra-mysql-cluster"
+  environment = "PRESTABLE" # или PRODUCTION
+  network_id  = yandex_vpc_network.network.id
 
-  rule {
-    type  = "droplet"
-    value = digitalocean_droplet.web1.id
+  resources {
+    resource_preset_id = "s2.micro"
+    disk_size          = 10
+    disk_type_id       = "network-ssd"
   }
 
-  rule {
-    type  = "droplet"
-    value = digitalocean_droplet.web2.id
+  database {
+    name = "terra-db"
+  }
+
+  user {
+    name     = "terra-user"
+    password = "your_password"
+  }
+
+  labels = {
+    project = "hexlet-terraform-03"
+    environment = "Development"
   }
 }
 
-resource "digitalocean_database_db" "database" {
-  cluster_id = digitalocean_database_cluster.main.id
-  name       = "terra-db"
-}
-
-resource "digitalocean_database_user" "db-user" {
-  cluster_id = digitalocean_database_cluster.main.id
-  name       = "terra-user"
-}
-
-resource "digitalocean_database_cluster" "main" {
-  name       = "terra-mysql-cluster"
-  engine     = "mysql"
-  version    = "8"
-  size       = "db-s-1vcpu-1gb"
-  region     = "ams3"
-  node_count = 1
-}

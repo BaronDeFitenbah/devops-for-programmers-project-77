@@ -1,4 +1,4 @@
-variable "do_api_token" {
+variable "yandex_api_token" {
   type = string
 }
 

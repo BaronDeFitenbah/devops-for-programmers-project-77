@@ -1,19 +1,21 @@
+# Выходные данные для Ansible инвентаря
 output "ansible_inventory" {
   value = <<-DOC
     [webservers]
-    ${digitalocean_droplet.web1.name} ansible_host=${digitalocean_droplet.web1.ipv4_address}
-    ${digitalocean_droplet.web2.name} ansible_host=${digitalocean_droplet.web2.ipv4_address}
+    ${yandex_compute_instance.vm_1.name} ansible_host=${yandex_compute_instance.vm_1.network_interface.0.nat_ip_address}
+    ${yandex_compute_instance.vm_2.name} ansible_host=${yandex_compute_instance.vm_2.network_interface.0.nat_ip_address}
     DOC
 }
 
+# Выходные данные для базы данных
 output "database_credentials" {
-  value     = <<-DOC
-    db_cluster_id: ${digitalocean_database_cluster.main.id}
-    db_host: ${digitalocean_database_cluster.main.host}
-    db_port: ${digitalocean_database_cluster.main.port}
-    db_name: ${digitalocean_database_cluster.main.database}
-    db_user: ${digitalocean_database_cluster.main.user}
-    db_password: ${digitalocean_database_cluster.main.password}
+  value = <<-DOC
+    db_cluster_id: ${yandex_mdb_mysql_cluster.main.id}
+    db_host: ${yandex_mdb_mysql_cluster.main.host}
+    db_port: ${yandex_mdb_mysql_cluster.main.port}
+    db_name: ${yandex_mdb_mysql_cluster.main.database.0.name}
+    db_user: ${yandex_mdb_mysql_cluster.main.user.0.name}
+    db_password: ${yandex_mdb_mysql_cluster.main.user.0.password}
     DOC
   sensitive = true
 }
