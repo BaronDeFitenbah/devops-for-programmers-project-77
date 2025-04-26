@@ -2,6 +2,21 @@
 data "yandex_compute_image" "ubuntu" {
   family = "ubuntu-2204-lts" # Семейство образов Ubuntu 22.04 LTS
 }
+resource "tls_private_key" "ssh" {
+  algorithm = "RSA"
+  rsa_bits  = 4096
+}
+
+resource "local_file" "ssh_private" {
+  content  = tls_private_key.ssh.private_key_openssh
+  filename = "id_rsa"
+}
+
+resource "local_file" "ssh_public" {
+  content  = tls_private_key.ssh.public_key_openssh
+  filename = "id_rsa.pub"
+}
+
 
 # Создание первой виртуальной машины (аналог web1)
 resource "yandex_compute_instance" "web1" {
@@ -24,7 +39,7 @@ resource "yandex_compute_instance" "web1" {
     subnet_id = yandex_vpc_subnet.subnet.id # Подсеть
     nat       = true # Включение NAT для доступа к интернету
   }
-  
+
   metadata = {
     ssh-keys = "ubuntu:${var.ssh_public_key}"
   }
