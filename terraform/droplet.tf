@@ -24,9 +24,9 @@ resource "yandex_compute_instance" "web1" {
     subnet_id = yandex_vpc_subnet.subnet.id # Подсеть
     nat       = true # Включение NAT для доступа к интернету
   }
-
+  
   metadata = {
-    ssh-keys = "ubuntu:${file("~/.ssh/id_rsa.pub")}" # Добавление SSH-ключа
+    ssh-keys = "ubuntu:${var.ssh_public_key}"
   }
 }
 

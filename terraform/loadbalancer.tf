@@ -1,9 +1,10 @@
 resource "yandex_lb_target_group" "target_group" {
-  name      = "hexlet-target-group"
-  region_id = var.yc_default_zone
+  name      = "my-target-group"
+  region_id = "ru-central1"
 
   target {
-    address = yandex_compute_instance.vm_1.network_interface.0.ip_address
+    subnet_id = yandex_vpc_subnet.subnet.id
+    address   = yandex_compute_instance.web1.network_interface.0.ip_address
   }
 }
 

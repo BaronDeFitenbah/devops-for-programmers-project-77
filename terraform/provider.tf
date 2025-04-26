@@ -13,7 +13,7 @@ terraform {
 
 # Провайдер Yandex Cloud
 provider "yandex" {
-  service_account_key_file = "./sa-key.json"  # Вместо OAuth-токена
+  token     = var.yc_oauth_token
   cloud_id  = var.yc_cloud_id
   folder_id = var.yc_folder_id
   zone      = var.yc_default_zone
