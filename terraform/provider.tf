@@ -4,15 +4,19 @@ terraform {
       source  = "yandex-cloud/yandex"
       version = "~> 0.85.0" # Убедитесь, что используете актуальную версию провайдера
     }
+    datadog = {
+      source  = "DataDog/datadog"
+      version = "~> 3.0"
+    }
   }
 }
 
 # Провайдер Yandex Cloud
 provider "yandex" {
-  token     = var.yc_oauth_token   # OAuth-токен для доступа к Yandex Cloud
-  cloud_id  = var.yc_cloud_id      # ID облака
-  folder_id = var.yc_folder_id     # ID каталога
-  zone      = var.yc_default_zone  # Зона доступности по умолчанию
+  token     = var.yc_oauth_token
+  cloud_id  = var.yc_cloud_id
+  folder_id = var.yc_folder_id
+  zone      = var.yc_default_zone
 }
 
 provider "datadog" {
